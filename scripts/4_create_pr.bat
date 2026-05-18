@@ -23,9 +23,24 @@ if "%CURRENT_BRANCH%"=="master" (
 :: Get the fork remote URL to extract the username
 for /f "tokens=*" %%u in ('git remote get-url origin') do set REMOTE_URL=%%u
 
-:: Extract username from URL (handles both https and git@ formats)
-:: https://github.com/USERNAME/Map.git
-for /f "tokens=4 delims=/" %%u in ("%REMOTE_URL%") do set GITHUB_USER=%%u
+:: Extract username from URL. Handles both formats:
+::   https://github.com/USERNAME/Map(.git)
+::   git@github.com:USERNAME/Map(.git)
+:: Note: "for /f delims=/" collapses consecutive slashes, so we can't just
+:: take token 4 of the https URL -- "//" counts as one delimiter.
+set "GH_PATH=%REMOTE_URL%"
+set "GH_PATH=%GH_PATH:https://github.com/=%"
+set "GH_PATH=%GH_PATH:http://github.com/=%"
+set "GH_PATH=%GH_PATH:git@github.com:=%"
+for /f "tokens=1 delims=/" %%u in ("%GH_PATH%") do set GITHUB_USER=%%u
+
+if "%GITHUB_USER%"=="" (
+    echo ERROR: Could not determine your GitHub username from the "origin" remote.
+    echo   origin = %REMOTE_URL%
+    echo Make sure "origin" points to your fork on GitHub.
+    pause
+    exit /b 1
+)
 
 echo Current branch: %CURRENT_BRANCH%
 echo.
