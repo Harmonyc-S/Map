@@ -43,6 +43,9 @@ mob
 			icon_state = "nobleman"
 			pixel_x = -16
 
+			DeathBox
+				name = "Death's Luxury Store"
+
 		PetStore
 			name = "Pet Store"
 			icon = 'icons/npcs/NPCs.dmi'
@@ -54,6 +57,9 @@ mob
 			icon = 'icons/npcs/NPCs.dmi'
 			icon_state = "tailor"
 			pixel_x = -16
+
+			DeathBox
+				name = "Death's Valmasian Merchant"
 
 		JianghuMerchant
 			name= "Jianghu Merchant"
